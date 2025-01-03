@@ -1,40 +1,50 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import { userData } from './Data'
-
+import { Link } from "react-router-dom"
+// import { userData } from "./Data";
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteUser } from './redux/UserReducer';
 function Home() {
-  return (
-    <div className='container'>
-      <h2>CRUD App with Redux Toolkit</h2>
-      <Link to='/add' className='btn btn-success my-3'>Ajouter</Link>
-      <h3>Liste des utilisateurs</h3>
-      <table className='table'>
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Nom</th>
-            <th>Email</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-         {
-            userData.map((user, index) => (
-              <tr key={index}>
-                <td>{user.id}</td>
-                <td>{user.name}</td>
-                <td>{user.email}</td>
-                <td>
-                    <Link to={`/update/${user.id}`} className='btn btn-primary btn-sm'>Modifier</Link>
-                    <button className='btn btn-danger btn-sm ms-2'>Supprimer</button>
-                </td>
-              </tr>
-            ))
-         }
-        </tbody>
-      </table>
-    </div>
-  )
+    const users = useSelector((state) => state.users)
+    const dispatch = useDispatch();
+    // const navigate = useNavigate();
+    const handeleDelete = (id) => {
+        dispatch(deleteUser({
+            id: id
+        }));
+        // navigate('/');
+    }
+    return (
+        <div className='container'>
+            <h2>Crud app with redux toolkit</h2>
+            <Link className='btn btn-success my-3' to="/add">Ajouter</Link>
+            <h3>liste des utilisateur</h3>
+            <table className='table'>
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        users.map((data, index) => {
+                            return <tr key={index}>
+                                <td>{data.id}</td>
+                                <td>{data.name}</td>
+                                <td>{data.email}</td>
+                                <td>
+                                    <Link to={`/edit/${data.id}`} className='btn btn-primary btn-sm'>Modifier</Link>
+                                    <Link className='btn btn-danger btn-sm' onClick={() => { handeleDelete(data.id); }}>Supprimer</Link>
+                                </td>
+                            </tr>
+                        })
+                    }
+                </tbody>
+            </table>
+        </div >
+    )
 }
 
 export default Home
